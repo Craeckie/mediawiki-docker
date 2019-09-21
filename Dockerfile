@@ -1,4 +1,10 @@
-FROM craeckie/htaccess:7
+FROM php:7-apache
+ADD apache-conf /root/
+RUN cat /root/apache-conf | tee -a /etc/apache2/apache2.conf
+
+#ADD init-htaccess.sh /etc/php-init.d/
+#ENV keydir /var/keys
+#VOLUME "$keydir"
 
 # System Dependencies.
 RUN apt-get update && apt-get install -y \
@@ -11,9 +17,11 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-install mbstring mysqli opcache intl
 
 # Install the default object cache.
-RUN pecl channel-update pecl.php.net \
-	&& pecl install apcu-5.1.8 \
-	&& docker-php-ext-enable apcu
+RUN pecl install apcu \
+    && docker-php-ext-enable apcu
+# RUN pecl channel-update pecl.php.net \
+# 	&& pecl install apcu-5.1.8 \
+# 	&& docker-php-ext-enable apcu
 
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
