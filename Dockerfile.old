@@ -34,19 +34,16 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
-# SQLite Directory Setup
-RUN mkdir -p /var/www/data \
-	&& chown -R www-data:www-data /var/www/data
-
 # Version
-ENV MEDIAWIKI_MAJOR_VERSION 1.29
-ENV MEDIAWIKI_BRANCH REL1_29
-ENV MEDIAWIKI_VERSION 1.29.1
-ENV MEDIAWIKI_SHA512 c4e04c4fb665c3d8299f3e03e608904aaf0e06381240c7259813eb670c3e32cde919353dd19993250cf49be81d604ac5f6d468bc563116a4b268e5011d34119f
+ENV MEDIAWIKI_MAJOR_VERSION 1.33
+ENV MEDIAWIKI_BRANCH REL1_33
+ENV MEDIAWIKI_VERSION 1.33.0
+ENV MEDIAWIKI_SHA512 e31f5d8bd0bef39b9e2db71f129da128d20174f86e6a4799de5e24195bdcbbc06778b978a48073934b6e59d837629d6b83c182c8271b5fb944ef4ce5df856c68
 
 # MediaWiki setup
-RUN curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" -o mediawiki.tar.gz \
-	&& echo "${MEDIAWIKI_SHA512} *mediawiki.tar.gz" | sha512sum -c - \
-	&& tar -xz --strip-components=1 -f mediawiki.tar.gz \
-	&& rm mediawiki.tar.gz \
-	&& chown -R www-data:www-data extensions skins cache images
+RUN set -eux; \
+  curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" -o mediawiki.tar.gz; \
+    echo "${MEDIAWIKI_SHA512} *mediawiki.tar.gz" | sha512sum -c -; \
+      tar -x --strip-components=1 -f mediawiki.tar.gz; \
+        rm mediawiki.tar.gz; \
+          chown -R www-data:www-data extensions skins cache images
